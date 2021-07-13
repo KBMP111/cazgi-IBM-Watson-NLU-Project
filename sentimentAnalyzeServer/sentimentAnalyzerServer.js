@@ -24,7 +24,7 @@ function getNLUInstance() {
   });
   return naturalLanguageUnderstanding;
 }
-function analyze(text,res) {
+function analyzeURLemotion(text,res) {
     let naturalLanguageUnderstanding = getNLUInstance();
 /// find the true parameter format
     const analyzeParams = {
@@ -54,38 +54,126 @@ function analyze(text,res) {
               });
 
 }
+/////////////////////
+function analyzeURL(text,res) {
+    let naturalLanguageUnderstanding = getNLUInstance();
+/// find the true parameter format
+    const analyzeParams = {
+      'url': text,
+      'features': {
+        'entities': {
+          'emotion': true,
+          'sentiment': true,
+          'limit': 2,
+        },
+        'keywords': {
+          'emotion': true,
+          'sentiment': true,
+          'limit': 2,
+        },
+      },
+    };
+///remember to swap out the true parameter format
+    naturalLanguageUnderstanding.analyze(analyzeParams)
+      .then(analysisResults => {
+            console.log(JSON.stringify(analysisResults.result.keywords[0].sentiment.label, null, 2));
+            res.send(analysisResults.result.keywords[0].sentiment.label);
+              })
+              .catch(err => {
+                console.log('error:', err);
+                res.send(err.toString());
+              });
 
+}
+/////////////////////
+function analyzeText(text,res) {
+    let naturalLanguageUnderstanding = getNLUInstance();
+/// find the true parameter format
+    const analyzeParams = {
+      'text': text,
+      'features': {
+        'entities': {
+          'emotion': true,
+          'sentiment': true,
+          'limit': 2,
+        },
+        'keywords': {
+          'emotion': true,
+          'sentiment': true,
+          'limit': 2,
+        },
+      },
+    };
+///remember to swap out the true parameter format
+    naturalLanguageUnderstanding.analyze(analyzeParams)
+      .then(analysisResults => {
+            console.log(JSON.stringify(analysisResults.result.keywords[2].label, null, 2));
+            res.send(analysisResults.result.keywords[2].label);
+              })
+              .catch(err => {
+                console.log('error:', err);
+                res.send(err.toString());
+              });
+
+}
+///////////////////////
+//////function to display URl emotions
+function analyzeTextemotion(text,res) {
+    let naturalLanguageUnderstanding = getNLUInstance();
+/// find the true parameter format
+    const analyzeParams = {
+      'text': text,
+      'features': {
+        'entities': {
+          'emotion': true,
+          'sentiment': true,
+          'limit': 2,
+        },
+        'keywords': {
+          'emotion': true,
+          'sentiment': true,
+          'limit': 2,
+        },
+      },
+    };
+///remember to swap out the true parameter format
+    naturalLanguageUnderstanding.analyze(analyzeParams)
+      .then(analysisResults => {
+            console.log(JSON.stringify(analysisResults.result.keywords[0].emotion, null, 2));
+            res.send(analysisResults.result.keywords[0].emotion);
+              })
+              .catch(err => {
+                console.log('error:', err);
+                res.send(err.toString());
+              });
+
+}
+
+/////////////////////
 app.get("/",(req,res)=>{
     res.render('index.html');
   });
 
 app.get("/url/emotion", (req,res) => {
     let text = req.query.url;
-    analyze(text,res)
+    analyzeURLemotion(text,res)
 });
 
-
 app.get("/url/sentiment", (req,res) => {
-    return res.send("url sentiment for "+req.query.url);
+    let text = req.query.url;
+    analyzeURL(text,res)
 });
 
 app.get("/text/emotion", (req,res) => {
-    return res.send({"happy":"10","sad":"90"});
+    let text = req.query.text;
+    analyzeTextemotion(text,res)
 });
 
 app.get("/text/sentiment", (req,res) => {
-    return res.send("text sentiment for "+req.query.text);
+    let text = req.query.text;
+    analyzeText(text,res)
 });
 
-
-app.get("/translate", (req,res) => {
-    let textToTranslate = req.query.textToTranslate;
-    translate(textToTranslate,res);
-});
-
-app.get("/translators", (req,res) => {
-  getLanguages(res);
-});
 
 let server = app.listen(8080, () => {
     console.log(`Listening at http://localhost:8080`);

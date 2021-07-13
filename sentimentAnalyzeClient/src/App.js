@@ -2,6 +2,7 @@ import './bootstrap.min.css';
 import './App.css';
 import EmotionTable from './EmotionTable.js';
 import React from 'react';
+import ReactDom from 'react-dom'
 import axios from 'axios';
 
 class App extends React.Component {
@@ -89,7 +90,9 @@ class App extends React.Component {
         <button className="btn-primary" onClick={this.sendForSentimentAnalysis}>Analyze Sentiment</button>
         <button className="btn-primary" onClick={this.sendForEmotionAnalysis}>Analyze Emotion</button>
         <br/>
+        <div>
             {this.state.sentimentOutput}
+        </div>
       </div>
     );
     }
